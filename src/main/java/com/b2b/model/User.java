@@ -16,19 +16,21 @@ public class User {
 	private String lastName;
 	private String mobile;
 	private String address;
+	private String email;
 	private String password;
 	
 	public User() {}
 	
 	
 
-	public User(Long id, String firstName, String lastName, String mobile, String address, String password) {
+	public User(Long id, String firstName, String lastName, String mobile, String address, String email, String password) {
 
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.mobile = mobile;
 		this.address = address;
+		this.email = email;
 		this.password = password;
 	}
 
@@ -73,6 +75,20 @@ public class User {
 	public void setAddress(String address) {
 		this.address = address;
 	}
+	
+	
+
+	public String getEmail() {
+		return email;
+	}
+
+
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
 
 	public String getPassword() {
 		return password;
