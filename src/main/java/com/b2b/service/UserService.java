@@ -22,8 +22,8 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class UserService {
 	
-	 @Autowired
-	 private UserRepository userRepository;
+    @Autowired
+	private UserRepository userRepository;
 	 
 	@Autowired
 	private BcryptEncoderConfig passwordEncoder;
@@ -94,11 +94,11 @@ public class UserService {
 	    mimeHelper.setText(plainText, htmlBody);  // Second parameter true enables HTML
 	    
 	    sender.send(mime);
-	}
+	 }
 	
 	
 	 
-	 public ResponseEntity<?> saveUser(User user) {
+	  public ResponseEntity<?> saveUser(User user) {
 		 
 		 
 		 if(user!=null) {
@@ -110,7 +110,39 @@ public class UserService {
 		 }
 		 return new ResponseEntity<>("user shoul not null", HttpStatus.BAD_REQUEST);
 		
-	  }
+	   }
+	  
+	  
+	  public ResponseEntity<?> getUserByEmailAndPassword(String email, String password) {
+	       
+	      Optional<User> userOptional = userRepository.findByEmail(email);
+	        
+	      if (userOptional.isPresent()) {
+	    	  
+	    	  User user = userOptional.get();
+	          
+	    	  if (passwordEncoder.matches(password, user.getPassword())) {
+	            return new ResponseEntity<>(user, HttpStatus.OK); 
+	          }
+	      }
+	      return new ResponseEntity<>("invalid credentials", HttpStatus.BAD_REQUEST); 
+	   }
+	 
+	 
+	   public User saveOrUpdateUser(User user) {
+	       return userRepository.save(user);
+	   }
+	
+	   
+	   public Optional<User> getUserById(Long id) {
+	      return userRepository.findById(id);
+	   }
+	
+	   public void deleteUserById(Long id) {
+	      userRepository.deleteById(id);
+	   }
+	   
+	   
 	 
 	 
 
