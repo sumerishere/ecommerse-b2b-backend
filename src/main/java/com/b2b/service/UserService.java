@@ -32,9 +32,8 @@ public class UserService {
 	JavaMailSender sender;
 	
 	
-	//------ mail api --------//
-	
 	public void signUpMail(String firstName, String to) throws MessagingException, IOException {
+		
 	    SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 	    simpleMailMessage.setTo(to);
 	    
