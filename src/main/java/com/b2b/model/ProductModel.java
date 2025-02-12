@@ -21,6 +21,8 @@ public class ProductModel {
 	
 	@Column(columnDefinition = "LongText")
 	private String productDescription;
+	
+	private String category;
 	private String productPrice;
 	
 	
@@ -35,13 +37,17 @@ public class ProductModel {
 	
 	public ProductModel() {}
 
-	public ProductModel(Long id, String productName, String productDescription, String productPrice) {
+
+	public ProductModel(Long id, String productName, String productDescription, String category, String productPrice,
+			byte[] productImage, ProductOwnerModel owner) {
 		this.id = id;
 		this.productName = productName;
 		this.productDescription = productDescription;
+		this.category = category;
 		this.productPrice = productPrice;
+		this.productImage = productImage;
+		this.owner = owner;
 	}
-
 
 
 	public Long getId() {
@@ -66,6 +72,16 @@ public class ProductModel {
 
 	public void setProductDescription(String productDescription) {
 		this.productDescription = productDescription;
+	}
+	
+	
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public String getProductPrice() {
