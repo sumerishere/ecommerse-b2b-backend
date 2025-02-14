@@ -1,9 +1,7 @@
 package com.b2b.controller;
 
-import java.io.IOException;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,54 +20,44 @@ import com.b2b.repository.UserRepository;
 import com.b2b.service.UserService;
 
 import jakarta.mail.MessagingException;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/users")
 @CrossOrigin("*")
+@Slf4j
 public class UserController {
 	
 	private UserService userService;
 	private UserRepository userRepository;
-	
-//	@Autowired
-//	AuthenticatioManager authenticatioManager;
-	
 	
 	public UserController(UserService userService, UserRepository userRepository) {
 		this.userService = userService;
 		this.userRepository = userRepository;
 		
 	}
-	
 	 
 	@PostMapping("/add-user")
-    public ResponseEntity<?> createUser(@RequestBody User user) {
+    public ResponseEntity<?> createUser(@RequestBody User user) throws MessagingException {
 		
 		Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
 		
-        try {
+        if(!userOptional.isPresent()) {
         	
-        	if(!userOptional.isPresent()) {
-        		userService.saveUser(user);
-    			userService.signUpMail(user.getFirstName(), user.getEmail());
-                return ResponseEntity.ok("User information saved successfully.");
+			userService.saveUser(user);
+			
+//    			userService.signUpMail(user.getFirstName(), user.getEmail());
+		    return ResponseEntity.ok("User information saved successfully.");
 
-        	}
-		}
-        catch (MessagingException | IOException e) {
-			e.printStackTrace();
 		}
         return new ResponseEntity<>("user already present", HttpStatus.BAD_REQUEST);
     }
 	
 	
-	
 	@GetMapping("/login")
-    public ResponseEntity<?> getUserByEmailAndPassword(@RequestParam String email, @RequestParam String password) {
-		
-       return userService.getUserByEmailAndPassword(email, password);  
+    public ResponseEntity<?> getUserByEmailAndPassword(@RequestParam String username, @RequestParam String password) {
+       return userService.getUserByEmailAndPassword(username, password);  
     }
-	
 	
 	
     @GetMapping("/{id}")
@@ -80,7 +68,7 @@ public class UserController {
         return user.map(ResponseEntity::ok)
                    .orElseGet(() -> ResponseEntity.notFound().build());
     }
-    
+
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {

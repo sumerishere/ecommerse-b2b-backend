@@ -1,5 +1,7 @@
 package com.b2b.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,25 +18,29 @@ public class User {
 	private String lastName;
 	private String mobile;
 	private String address;
+	private String username;
 	private String email;
 	private String password;
+	
+	private List<String> roles;
 	
 	public User() {}
 	
 	
 
-	public User(Long id, String firstName, String lastName, String mobile, String address, String email, String password) {
-
+	public User(Long id, String firstName, String lastName, String mobile, String address, String username, String email,
+			String password, List<String> roles) {
+		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.mobile = mobile;
 		this.address = address;
+		this.username = username;
 		this.email = email;
 		this.password = password;
+		this.roles = roles;
 	}
-
-
 
 	public Long getId() {
 		return id;
@@ -78,6 +84,18 @@ public class User {
 	
 	
 
+	public String getUsername() {
+		return username;
+	}
+
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+
+
 	public String getEmail() {
 		return email;
 	}
@@ -96,6 +114,18 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+
+
+	public List<String> getRoles() {
+		return roles;
+	}
+
+
+
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
 	}
 	
 	

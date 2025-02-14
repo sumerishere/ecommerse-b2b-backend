@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -20,7 +23,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService{
 	
     @Autowired
 	private UserRepository userRepository;
@@ -99,7 +102,6 @@ public class UserService {
 	 
 	  public ResponseEntity<?> saveUser(User user) {
 		 
-		 
 		 if(user!=null) {
 			 
 			 String encodedPassword = passwordEncoder.encode(user.getPassword());
@@ -107,19 +109,17 @@ public class UserService {
 		     
 		     return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK); 
 		 }
-		 return new ResponseEntity<>("user shoul not null", HttpStatus.BAD_REQUEST);
+		 return new ResponseEntity<>("user should not null", HttpStatus.BAD_REQUEST);
 		
 	   }
 	  
 	  
-	  public ResponseEntity<?> getUserByEmailAndPassword(String email, String password) {
+	  public ResponseEntity<?> getUserByEmailAndPassword(String username, String password) {
 	       
-	      Optional<User> userOptional = userRepository.findByEmail(email);
+	      User user = userRepository.findByUsername(username);
 	        
-	      if (userOptional.isPresent()) {
+	      if (user != null) {
 	    	  
-	    	  User user = userOptional.get();
-	          
 	    	  if (passwordEncoder.matches(password, user.getPassword())) {
 	            return new ResponseEntity<>(user, HttpStatus.OK); 
 	          }
@@ -142,6 +142,17 @@ public class UserService {
 	   }
 	   
 	   
+	   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	        User user = userRepository.findByUsername(username);
+	        if (user != null) {
+	            return org.springframework.security.core.userdetails.User.builder()
+	                    .username(user.getUsername())
+	                    .password(user.getPassword())
+	                    .roles(user.getRoles().toArray(new String[0]))
+	                    .build();
+	        }
+	        throw new UsernameNotFoundException("User not found with username: " + username);
+	    }
 	 
 	 
 
